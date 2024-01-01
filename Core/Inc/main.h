@@ -59,6 +59,8 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define DIR1_Pin GPIO_PIN_13
 #define DIR1_GPIO_Port GPIOC
+#define DIR2_Pin GPIO_PIN_14
+#define DIR2_GPIO_Port GPIOC
 #define DIR3_Pin GPIO_PIN_15
 #define DIR3_GPIO_Port GPIOC
 #define PWM1_Pin GPIO_PIN_0
@@ -71,8 +73,12 @@ void Error_Handler(void);
 #define PWM4_GPIO_Port GPIOC
 #define DIR4_Pin GPIO_PIN_2
 #define DIR4_GPIO_Port GPIOA
+#define I2C_ADD2_Pin GPIO_PIN_8
+#define I2C_ADD2_GPIO_Port GPIOC
 #define I2C_ADD1_Pin GPIO_PIN_9
 #define I2C_ADD1_GPIO_Port GPIOC
+#define HEART_BEAT_Pin GPIO_PIN_10
+#define HEART_BEAT_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
 
