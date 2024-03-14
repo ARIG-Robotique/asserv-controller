@@ -121,12 +121,12 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
     PB1     ------> ADC1_IN12
     PB14     ------> ADC1_IN5
     */
-    GPIO_InitStruct.Pin = CURRENT_1_Pin|CURRENT_2_Pin;
+    GPIO_InitStruct.Pin = CURRENT_SENSOR__1_Pin|CURRENT_SENSOR_2_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-    GPIO_InitStruct.Pin = CURRENT_3_Pin|CURRENT_4_Pin;
+    GPIO_InitStruct.Pin = CURRENT_SENSOR_3_Pin|CURRENT_SENSOR_4_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
@@ -154,9 +154,9 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
     PB1     ------> ADC1_IN12
     PB14     ------> ADC1_IN5
     */
-    HAL_GPIO_DeInit(GPIOA, CURRENT_1_Pin|CURRENT_2_Pin);
+    HAL_GPIO_DeInit(GPIOA, CURRENT_SENSOR__1_Pin|CURRENT_SENSOR_2_Pin);
 
-    HAL_GPIO_DeInit(GPIOB, CURRENT_3_Pin|CURRENT_4_Pin);
+    HAL_GPIO_DeInit(GPIOB, CURRENT_SENSOR_3_Pin|CURRENT_SENSOR_4_Pin);
 
   /* USER CODE BEGIN ADC1_MspDeInit 1 */
 

@@ -54,18 +54,18 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, DIR1_Pin|DIR2_Pin|DIR3_Pin|SLEEP_3_Pin
+  HAL_GPIO_WritePin(GPIOC, DIR3_Pin|DIR2_Pin|DIR1_Pin|SLEEP_1_Pin
                           |SLEEP_2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, SLEEP_4_Pin|HEART_BEAT_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, SLEEP_1_Pin|DIR4_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, SLEEP_3_Pin|DIR4_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : PCPin PCPin PCPin PCPin
                            PCPin */
-  GPIO_InitStruct.Pin = DIR1_Pin|DIR2_Pin|DIR3_Pin|SLEEP_3_Pin
+  GPIO_InitStruct.Pin = DIR3_Pin|DIR2_Pin|DIR1_Pin|SLEEP_1_Pin
                           |SLEEP_2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
@@ -80,7 +80,7 @@ void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PBPin PBPin */
-  GPIO_InitStruct.Pin = SLEEP_1_Pin|DIR4_Pin;
+  GPIO_InitStruct.Pin = SLEEP_3_Pin|DIR4_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
