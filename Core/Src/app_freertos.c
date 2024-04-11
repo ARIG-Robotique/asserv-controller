@@ -310,4 +310,3 @@ Motor getMotor(uint8_t motorIndex) {
   }
 }
 /* USER CODE END Application */
-
