@@ -27,7 +27,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "itm_log.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -48,7 +48,16 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+EncoderConfiguration encoderConfiguration;
+MotorConfiguration motorConfiguration;
+Encoder encoder1;
+Encoder encoder2;
+Encoder encoder3;
+Encoder encoder4;
+Motor motor1;
+Motor motor2;
+Motor motor3;
+Motor motor4;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -71,7 +80,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-
+  LOG_INFO("main: MCU Configuration");
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -80,14 +89,14 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-
+  LOG_INFO("main: Begin Init");
   /* USER CODE END Init */
 
   /* Configure the system clock */
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-
+  LOG_INFO("main: Begin SysInit");
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -117,11 +126,13 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
+  // ReSharper disable once CppDFAEndlessLoop
+  while (true)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    LOG_WARN("main: Execution après init de FreeRTOS. Tres bizarre");
   }
   /* USER CODE END 3 */
 }
@@ -203,10 +214,20 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
+  LOG_ERROR("main: ERROR HANDLER");
+
   /* User can add his own implementation to report the HAL error return state */
   __disable_irq();
-  while (1)
+
+  // ReSharper disable once CppDFAEndlessLoop
+  while (true)
   {
+    HAL_GPIO_WritePin(HEART_BEAT_GPIO_Port, HEART_BEAT_Pin, GPIO_PIN_RESET);
+    osDelay(1000);
+    for (int i = 0 ; i < 10 ; i++) {
+      HAL_GPIO_TogglePin(HEART_BEAT_GPIO_Port, HEART_BEAT_Pin);
+      osDelay(100);
+    }
   }
   /* USER CODE END Error_Handler_Debug */
 }

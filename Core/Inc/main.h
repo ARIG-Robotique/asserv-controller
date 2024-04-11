@@ -31,11 +31,53 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdbool.h>
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
+typedef struct {
+  double value;
+} Encoder;
+
+typedef struct {
+  double speed;
+  bool fault;
+  double current;
+} Motor;
+
+typedef struct {
+  bool encoder1Enabled;
+  bool encoder1Inverted;
+  bool encoder2Enabled;
+  bool encoder2Inverted;
+  bool encoder3Enabled;
+  bool encoder3Inverted;
+  bool encoder4Enabled;
+  bool encoder4Inverted;
+} EncoderConfiguration;
+
+typedef struct {
+  bool motor1Enabled;
+  bool motor1Inverted;
+  bool motor2Enabled;
+  bool motor2Inverted;
+  bool motor3Enabled;
+  bool motor3Inverted;
+  bool motor4Enabled;
+  bool motor4Inverted;
+} MotorConfiguration;
+
+extern EncoderConfiguration encoderConfiguration;
+extern MotorConfiguration motorConfiguration;
+extern Encoder encoder1;
+extern Encoder encoder2;
+extern Encoder encoder3;
+extern Encoder encoder4;
+extern Motor motor1;
+extern Motor motor2;
+extern Motor motor3;
+extern Motor motor4;
 
 /* USER CODE END ET */
 
@@ -129,6 +171,23 @@ void Error_Handler(void);
 #define DIR4_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
+
+// Tension d'alimentation de référence
+#define V_REF 3.3
+
+// Résolution des convertisseurs ADC de la STM32G474RET6
+#define ADC_RESOLUTION 4096.0
+
+// The output voltage is about 20 mV/A plus a 50 mV offset.
+#define CURRENT_SENSOR_GAIN 0.02
+#define CURRENT_SENSOR_OFFSET 0.05
+
+// CAN Message ID
+#define SET_MOTOR_CONFIGURATION_ID 11
+#define SET_ENCODER_CONFIGURATION_ID 12
+#define SET_MOTOR_SPEED_ID 13
+#define GET_ENCODER_ID 14
+#define GET_VERSION 15
 
 /* USER CODE END Private defines */
 
