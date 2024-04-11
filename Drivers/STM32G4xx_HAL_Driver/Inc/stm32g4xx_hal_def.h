@@ -208,3 +208,4 @@ typedef enum
 #endif
 
 #endif /* ___STM32G4xx_HAL_DEF */
+

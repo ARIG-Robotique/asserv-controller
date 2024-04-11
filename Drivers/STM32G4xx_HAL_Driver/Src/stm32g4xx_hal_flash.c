@@ -791,3 +791,4 @@ static void FLASH_Program_Fast(uint32_t Address, uint32_t DataAddress)
 /**
   * @}
   */
+

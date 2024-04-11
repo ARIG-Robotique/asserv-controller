@@ -814,3 +814,4 @@ void HAL_PWREx_DisableUCPDDeadBattery(void);
 
 
 #endif /* STM32G4xx_HAL_PWR_EX_H */
+

@@ -624,3 +624,4 @@ void HAL_SYSCFG_CCMSRAM_WriteProtectionEnable(uint32_t Page);
 #endif
 
 #endif /* STM32G4xx_HAL_H */
+

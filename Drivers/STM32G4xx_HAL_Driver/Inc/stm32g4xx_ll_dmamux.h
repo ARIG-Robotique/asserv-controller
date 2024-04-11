@@ -2003,3 +2003,4 @@ __STATIC_INLINE uint32_t LL_DMAMUX_IsEnabledIT_RGO(DMAMUX_Channel_TypeDef *DMAMU
 #endif
 
 #endif /* __STM32G4xx_LL_DMAMUX_H */
+

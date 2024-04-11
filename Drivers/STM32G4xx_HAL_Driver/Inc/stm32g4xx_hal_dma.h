@@ -849,3 +849,4 @@ uint32_t             HAL_DMA_GetError(DMA_HandleTypeDef *hdma);
 #endif
 
 #endif /* __STM32G4xx_HAL_DMA_H */
+

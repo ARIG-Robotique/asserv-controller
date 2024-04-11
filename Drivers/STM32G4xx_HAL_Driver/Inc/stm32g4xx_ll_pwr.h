@@ -1599,3 +1599,4 @@ ErrorStatus LL_PWR_DeInit(void);
 #endif
 
 #endif /* STM32G4xx_LL_PWR_H */
+

@@ -408,3 +408,4 @@ void HAL_PWR_PVDCallback(void);
 
 
 #endif /* STM32G4xx_HAL_PWR_H */
+

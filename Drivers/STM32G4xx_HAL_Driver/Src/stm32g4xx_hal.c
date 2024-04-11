@@ -797,3 +797,4 @@ void HAL_SYSCFG_CCMSRAM_WriteProtectionEnable(uint32_t Page)
 /**
   * @}
   */
+

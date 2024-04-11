@@ -778,3 +778,4 @@ ErrorStatus LL_CRS_DeInit(void);
 #endif
 
 #endif /* __STM32G4xx_LL_CRS_H */
+
