@@ -25,6 +25,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "tim.h"
 #include "itm_log.h"
 #include "fdcan.h"
 /* USER CODE END Includes */
@@ -46,7 +47,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
-
+bool encoderAlternateRead = false;
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
@@ -70,7 +71,7 @@ const osTimerAttr_t adcTimer_attributes = {
 /* USER CODE BEGIN FunctionPrototypes */
 void notifyVersion(FDCAN_TxHeaderTypeDef txHeader);
 void notifyMotor(FDCAN_TxHeaderTypeDef txHeader, Motor motor);
-void notifyEncoder(FDCAN_TxHeaderTypeDef txHeader, Encoder encoder);
+void notifyEncoders(FDCAN_TxHeaderTypeDef txHeader);
 
 void setMotorSpeed(Motor motor);
 
@@ -144,7 +145,6 @@ void StartDefaultTask(void *argument)
   /* USER CODE BEGIN StartDefaultTask */
   LOG_INFO("mainTask: Start");
 
-
   LOG_INFO("mainTask: Init variables");
   encoderConfiguration.encoder1Enabled = false;
   encoderConfiguration.encoder1Inverted = false;
@@ -185,6 +185,11 @@ void StartDefaultTask(void *argument)
   LOG_INFO("mainTask: Start FDCan listener");
   HAL_FDCAN_Start(&hfdcan1);
 
+  LOG_INFO("mainTask: Start encoders");
+  HAL_TIM_Encoder_Start(&htim2, TIM_CHANNEL_ALL);
+  HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_ALL);
+
+
   // Start timers after boot init
   osTimerStart(heartBeatTimerHandle, 1000);
   osTimerStart(adcTimerHandle, 2000);
@@ -212,16 +217,20 @@ void StartDefaultTask(void *argument)
     HAL_StatusTypeDef canRequest = HAL_FDCAN_GetRxMessage(&hfdcan1, FDCAN_RX_FIFO0, &RxHeader, RxData);
     if (canRequest == HAL_OK) {
       TxHeader.Identifier = RxHeader.Identifier;
-      if (RxHeader.Identifier == GET_ENCODER_ID) {
-        notifyEncoder(TxHeader, getEncoder(RxData[0]));
+      if (RxHeader.Identifier == SET_MOTOR_CONFIGURATION_ID) {
+        // Not Yet Implemented
+
+      } else if (RxHeader.Identifier == SET_ENCODER_CONFIGURATION_ID) {
+        // Not Yet Implemented
 
       } else if (RxHeader.Identifier == SET_MOTOR_SPEED_ID) {
         setMotorSpeed(getMotor(RxData[0]));
 
-      } else if (RxHeader.Identifier == SET_MOTOR_CONFIGURATION_ID) {
+      } else if (RxHeader.Identifier == GET_MOTOR_ID) {
+        notifyMotors(TxHeader);
 
-
-      } else if (RxHeader.Identifier == SET_ENCODER_CONFIGURATION_ID) {
+      } else if (RxHeader.Identifier == GET_ENCODER_ID) {
+        notifyEncoders(TxHeader);
 
 
       } else if (RxHeader.Identifier == GET_VERSION) {
@@ -231,7 +240,8 @@ void StartDefaultTask(void *argument)
         LOG_WARN("mainTask: Unknown message");
       }
     }
-    osDelay(50);
+
+    //osDelay(5);
 
   }
   /* USER CODE END StartDefaultTask */
@@ -276,8 +286,48 @@ void notifyVersion(FDCAN_TxHeaderTypeDef txHeader) {
 void notifyMotor(FDCAN_TxHeaderTypeDef txHeader, Motor motor) {
 
 }
-void notifyEncoder(FDCAN_TxHeaderTypeDef txHeader, Encoder encoder) {
 
+void notifyEncoders(FDCAN_TxHeaderTypeDef txHeader) {
+  int16_t encoder1Value;
+  int16_t encoder2Value;
+  if (encoderAlternateRead) {
+    encoder1Value = htim2.Instance->CNT;
+    htim2.Instance->CNT = 0;
+    encoder2Value = htim3.Instance->CNT;
+    htim3.Instance->CNT = 0;
+
+  } else {
+    encoder2Value = htim3.Instance->CNT;
+    htim3.Instance->CNT = 0;
+    encoder1Value = htim2.Instance->CNT;
+    htim2.Instance->CNT = 0;
+  }
+  encoderAlternateRead = !encoderAlternateRead;
+
+  // Send values
+  txHeader.Identifier = GET_ENCODER_ID;
+  txHeader.DataLength = FDCAN_DLC_BYTES_4;
+
+  uint8_t txBuffer[FDCAN_DLC_BYTES_4];
+
+  // Encoder 1
+  if (encoderConfiguration.encoder1Inverted) {
+    encoder1Value = -encoder1Value;
+  }
+  txBuffer[0] = encoder1Value >> 8;
+  txBuffer[1] = encoder1Value & 0xFF;
+
+  // Encoder 2
+  if (encoderConfiguration.encoder2Inverted) {
+    encoder2Value = -encoder2Value;
+  }
+  txBuffer[2] = encoder2Value >> 8;
+  txBuffer[3] = encoder2Value & 0xFF;
+
+  if (HAL_FDCAN_AddMessageToTxFifoQ(&hfdcan1, &txHeader, txBuffer) != HAL_OK) {
+    /* Transmission request Error */
+    Error_Handler();
+  }
 }
 
 void setMotorSpeed(Motor motor) {
