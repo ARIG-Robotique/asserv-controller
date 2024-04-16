@@ -185,9 +185,14 @@ void Error_Handler(void);
 // CAN Message ID
 #define SET_MOTOR_CONFIGURATION_ID 11
 #define SET_ENCODER_CONFIGURATION_ID 12
+
 #define SET_MOTOR_SPEED_ID 13
-#define GET_ENCODER_ID 14
-#define GET_VERSION 15
+
+#define GET_MOTOR_ID 14
+#define GET_ENCODER_ID 15
+
+#define GET_VERSION 16
+
 
 /* USER CODE END Private defines */
 
