@@ -70,7 +70,7 @@ const osTimerAttr_t adcTimer_attributes = {
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
 void notifyVersion(FDCAN_TxHeaderTypeDef txHeader);
-void notifyMotor(FDCAN_TxHeaderTypeDef txHeader, Motor motor);
+void notifyMotors(FDCAN_TxHeaderTypeDef txHeader);
 void notifyEncoders(FDCAN_TxHeaderTypeDef txHeader);
 
 void setMotorSpeed(Motor motor);
@@ -189,6 +189,8 @@ void StartDefaultTask(void *argument)
   HAL_TIM_Encoder_Start(&htim2, TIM_CHANNEL_ALL);
   HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_ALL);
 
+  LOG_INFO("mainTask: Star PWMs");
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1 | TIM_CHANNEL_2 | TIM_CHANNEL_3 | TIM_CHANNEL_4);
 
   // Start timers after boot init
   osTimerStart(heartBeatTimerHandle, 1000);
@@ -247,11 +249,22 @@ void StartDefaultTask(void *argument)
   /* USER CODE END StartDefaultTask */
 }
 
+bool alternateMotor = false;
+
 /* heartBeatCallback function */
 void heartBeatCallback(void *argument)
 {
   /* USER CODE BEGIN heartBeatCallback */
   HAL_GPIO_TogglePin(HEART_BEAT_GPIO_Port, HEART_BEAT_Pin);
+
+  if (alternateMotor) {
+    __HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 0);
+    __HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 1000);
+  } else {
+    __HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 1000);
+    __HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 0);
+  }
+  alternateMotor = !alternateMotor;
   /* USER CODE END heartBeatCallback */
 }
 
@@ -283,7 +296,7 @@ void notifyVersion(FDCAN_TxHeaderTypeDef txHeader) {
   }
 }
 
-void notifyMotor(FDCAN_TxHeaderTypeDef txHeader, Motor motor) {
+void notifyMotors(FDCAN_TxHeaderTypeDef txHeader) {
 
 }
 
