@@ -244,7 +244,7 @@ void StartDefaultTask(void *argument)
       }
     }
 
-    //osDelay(5);
+    osDelay(5);
 
   }
   /* USER CODE END StartDefaultTask */
