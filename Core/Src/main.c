@@ -50,14 +50,6 @@
 /* USER CODE BEGIN PV */
 EncoderConfiguration encoderConfiguration;
 MotorConfiguration motorConfiguration;
-Encoder encoder1;
-Encoder encoder2;
-Encoder encoder3;
-Encoder encoder4;
-Motor motor1;
-Motor motor2;
-Motor motor3;
-Motor motor4;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/

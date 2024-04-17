@@ -37,47 +37,31 @@ extern "C" {
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
 typedef struct {
-  double value;
-} Encoder;
-
-typedef struct {
-  double speed;
-  bool fault;
-  double current;
-} Motor;
-
-typedef struct {
   bool encoder1Enabled;
-  bool encoder1Inverted;
   bool encoder2Enabled;
-  bool encoder2Inverted;
   bool encoder3Enabled;
-  bool encoder3Inverted;
   bool encoder4Enabled;
+
+  bool encoder1Inverted;
+  bool encoder2Inverted;
+  bool encoder3Inverted;
   bool encoder4Inverted;
 } EncoderConfiguration;
 
 typedef struct {
   bool motor1Enabled;
-  bool motor1Inverted;
   bool motor2Enabled;
-  bool motor2Inverted;
   bool motor3Enabled;
-  bool motor3Inverted;
   bool motor4Enabled;
+
+  bool motor1Inverted;
+  bool motor2Inverted;
+  bool motor3Inverted;
   bool motor4Inverted;
 } MotorConfiguration;
 
 extern EncoderConfiguration encoderConfiguration;
 extern MotorConfiguration motorConfiguration;
-extern Encoder encoder1;
-extern Encoder encoder2;
-extern Encoder encoder3;
-extern Encoder encoder4;
-extern Motor motor1;
-extern Motor motor2;
-extern Motor motor3;
-extern Motor motor4;
 
 /* USER CODE END ET */
 

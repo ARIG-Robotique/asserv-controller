@@ -70,13 +70,9 @@ const osTimerAttr_t adcTimer_attributes = {
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
 void notifyVersion(FDCAN_TxHeaderTypeDef txHeader);
-void notifyMotors(FDCAN_TxHeaderTypeDef txHeader);
 void notifyEncoders(FDCAN_TxHeaderTypeDef txHeader);
 
-void setMotorSpeed(Motor motor);
-
-Encoder getEncoder(uint8_t encoderIndex);
-Motor getMotor(uint8_t motorIndex);
+void setMotorSpeed(uint16_t pwmMotor1, bool dirMotor1, uint16_t pwmMotor2, bool dirMotor2);
 
 /* USER CODE END FunctionPrototypes */
 
@@ -164,24 +160,6 @@ void StartDefaultTask(void *argument)
   motorConfiguration.motor4Enabled = false;
   motorConfiguration.motor4Inverted = false;
 
-  encoder1.value = 0.0;
-  encoder2.value = 0.0;
-  encoder3.value = 0.0;
-  encoder4.value = 0.0;
-
-  motor1.speed = 0.0;
-  motor1.current = 0.0;
-  motor1.fault = false;
-  motor2.speed = 0.0;
-  motor2.current = 0.0;
-  motor2.fault = false;
-  motor3.speed = 0.0;
-  motor3.current = 0.0;
-  motor3.fault = false;
-  motor4.speed = 0.0;
-  motor4.current = 0.0;
-  motor4.fault = false;
-
   LOG_INFO("mainTask: Start FDCan listener");
   HAL_FDCAN_Start(&hfdcan1);
 
@@ -217,7 +195,7 @@ void StartDefaultTask(void *argument)
   {
     /* Check if a message is come */
     FDCAN_RxHeaderTypeDef RxHeader;
-    uint8_t               RxData[1];
+    uint8_t               RxData[5];
     HAL_StatusTypeDef canRequest = HAL_FDCAN_GetRxMessage(&hfdcan1, FDCAN_RX_FIFO0, &RxHeader, RxData);
     if (canRequest == HAL_OK) {
       TxHeader.Identifier = RxHeader.Identifier;
@@ -228,10 +206,14 @@ void StartDefaultTask(void *argument)
         // Not Yet Implemented
 
       } else if (RxHeader.Identifier == SET_MOTOR_SPEED_ID) {
-        setMotorSpeed(getMotor(RxData[0]));
+        uint16_t pwmMotor1 = (RxData[0] << 8) | RxData[1];
+        uint16_t pwmMotor2 = (RxData[2] << 8) | RxData[3];
+        bool dirMotor1 = RxData[4] & 0x01;
+        bool dirMotor2 = RxData[4] & 0x02;
+        setMotorSpeed(pwmMotor1, dirMotor1, pwmMotor2, dirMotor2);
 
       } else if (RxHeader.Identifier == GET_MOTOR_ID) {
-        notifyMotors(TxHeader);
+        // Not Yet Implemented
 
       } else if (RxHeader.Identifier == GET_ENCODER_ID) {
         notifyEncoders(TxHeader);
@@ -286,10 +268,6 @@ void notifyVersion(FDCAN_TxHeaderTypeDef txHeader) {
   }
 }
 
-void notifyMotors(FDCAN_TxHeaderTypeDef txHeader) {
-
-}
-
 void notifyEncoders(FDCAN_TxHeaderTypeDef txHeader) {
   int16_t encoder1Value;
   int16_t encoder2Value;
@@ -333,33 +311,23 @@ void notifyEncoders(FDCAN_TxHeaderTypeDef txHeader) {
   }
 }
 
-void setMotorSpeed(Motor motor) {
-
-}
-
-Encoder getEncoder(uint8_t encoderIndex) {
-  switch (encoderIndex) {
-    case 4:
-      return encoder4;
-    case 3:
-      return encoder3;
-    case 2:
-      return encoder2;
-    default:
-      return encoder1;
+void setMotorSpeed(uint16_t pwmMotor1, bool dirMotor1, uint16_t pwmMotor2, bool dirMotor2) {
+  // Set motor 1
+  if (motorConfiguration.motor1Inverted) {
+    dirMotor1 = !dirMotor1;
   }
+  HAL_GPIO_WritePin(DIR1_GPIO_Port, DIR1_Pin, dirMotor1 ? GPIO_PIN_SET : GPIO_PIN_RESET);
+  htim1.Instance->CCR1 = pwmMotor1;
+
+  // Set motor 2
+  if (motorConfiguration.motor2Inverted) {
+    dirMotor2 = !dirMotor2;
+  }
+  HAL_GPIO_WritePin(DIR2_GPIO_Port, DIR2_Pin, dirMotor2 ? GPIO_PIN_SET : GPIO_PIN_RESET);
+  htim1.Instance->CCR2 = pwmMotor2;
+
+  // Refresh PWMs
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1 | TIM_CHANNEL_2);
 }
 
-Motor getMotor(uint8_t motorIndex) {
-  switch (motorIndex) {
-    case 4:
-      return motor4;
-    case 3:
-      return motor3;
-    case 2:
-      return motor2;
-    default:
-      return motor1;
-  }
-}
 /* USER CODE END Application */
