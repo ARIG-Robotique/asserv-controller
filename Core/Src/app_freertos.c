@@ -48,6 +48,7 @@
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
 bool encoderAlternateRead = false;
+bool motorAlternateWrite = false;
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
@@ -333,7 +334,14 @@ void setMotorSpeed(uint16_t pwmMotor1, bool dirMotor1, uint16_t pwmMotor2, bool 
   htim1.Instance->CCR2 = pwmMotor2;
 
   // Refresh PWMs
-  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1 | TIM_CHANNEL_2);
+  if (motorAlternateWrite) {
+    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
+  } else {
+    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
+    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+  }
+  motorAlternateWrite = !motorAlternateWrite;
 }
 
 /* USER CODE END Application */
