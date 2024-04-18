@@ -49,6 +49,10 @@
 /* USER CODE BEGIN Variables */
 bool encoderAlternateRead = false;
 bool motorAlternateWrite = false;
+
+static int16_t encoder1Value = 0;
+static int16_t encoder2Value = 0;
+
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
@@ -194,6 +198,21 @@ void StartDefaultTask(void *argument)
   // ReSharper disable once CppDFAEndlessLoop
   while(true)
   {
+    /* Read encoders */
+    if (encoderAlternateRead) {
+      encoder1Value += htim2.Instance->CNT;
+      htim2.Instance->CNT = 0;
+      encoder2Value += htim3.Instance->CNT;
+      htim3.Instance->CNT = 0;
+
+    } else {
+      encoder2Value += htim3.Instance->CNT;
+      htim3.Instance->CNT = 0;
+      encoder1Value += htim2.Instance->CNT;
+      htim2.Instance->CNT = 0;
+    }
+    encoderAlternateRead = !encoderAlternateRead;
+
     /* Check if a message is come */
     FDCAN_RxHeaderTypeDef RxHeader;
     uint8_t               RxData[5];
@@ -227,7 +246,7 @@ void StartDefaultTask(void *argument)
       }
     }
 
-    osDelay(5);
+    osDelay(1);
 
   }
   /* USER CODE END StartDefaultTask */
@@ -270,22 +289,6 @@ void notifyVersion(FDCAN_TxHeaderTypeDef txHeader) {
 }
 
 void notifyEncoders(FDCAN_TxHeaderTypeDef txHeader) {
-  int16_t encoder1Value;
-  int16_t encoder2Value;
-  if (encoderAlternateRead) {
-    encoder1Value = htim2.Instance->CNT;
-    htim2.Instance->CNT = 0;
-    encoder2Value = htim3.Instance->CNT;
-    htim3.Instance->CNT = 0;
-
-  } else {
-    encoder2Value = htim3.Instance->CNT;
-    htim3.Instance->CNT = 0;
-    encoder1Value = htim2.Instance->CNT;
-    htim2.Instance->CNT = 0;
-  }
-  encoderAlternateRead = !encoderAlternateRead;
-
   // Send values
   txHeader.Identifier = GET_ENCODER_ID;
   txHeader.DataLength = FDCAN_DLC_BYTES_4;
@@ -298,6 +301,7 @@ void notifyEncoders(FDCAN_TxHeaderTypeDef txHeader) {
   }
   txBuffer[0] = encoder1Value >> 8;
   txBuffer[1] = encoder1Value & 0xFF;
+  encoder1Value = 0;
 
   // Encoder 2
   if (encoderConfiguration.encoder2Inverted) {
