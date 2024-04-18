@@ -317,11 +317,17 @@ void setMotorSpeed(uint16_t pwmMotor1, bool dirMotor1, uint16_t pwmMotor2, bool 
     dirMotor1 = !dirMotor1;
   }
   HAL_GPIO_WritePin(DIR1_GPIO_Port, DIR1_Pin, dirMotor1 ? GPIO_PIN_SET : GPIO_PIN_RESET);
+  if (pwmMotor1 > 4096) {
+    pwmMotor1 = 4096;
+  }
   htim1.Instance->CCR1 = pwmMotor1;
 
   // Set motor 2
   if (motorConfiguration.motor2Inverted) {
     dirMotor2 = !dirMotor2;
+  }
+  if (pwmMotor2 > 4096) {
+    pwmMotor2 = 4096;
   }
   HAL_GPIO_WritePin(DIR2_GPIO_Port, DIR2_Pin, dirMotor2 ? GPIO_PIN_SET : GPIO_PIN_RESET);
   htim1.Instance->CCR2 = pwmMotor2;
