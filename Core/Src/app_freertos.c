@@ -220,10 +220,12 @@ void StartDefaultTask(void *argument)
     if (canRequest == HAL_OK) {
       TxHeader.Identifier = RxHeader.Identifier;
       if (RxHeader.Identifier == SET_MOTOR_CONFIGURATION_ID) {
-        // Not Yet Implemented
+        motorConfiguration.motor1Inverted = RxData[0] & 0x01;
+        motorConfiguration.motor2Inverted = RxData[0] & 0x02;
 
       } else if (RxHeader.Identifier == SET_ENCODER_CONFIGURATION_ID) {
-        // Not Yet Implemented
+        encoderConfiguration.encoder1Inverted = RxData[0] & 0x01;
+        encoderConfiguration.encoder2Inverted = RxData[0] & 0x02;
 
       } else if (RxHeader.Identifier == SET_MOTOR_SPEED_ID) {
         uint16_t pwmMotor1 = (RxData[0] << 8) | RxData[1];
