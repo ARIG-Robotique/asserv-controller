@@ -311,6 +311,7 @@ void notifyEncoders(FDCAN_TxHeaderTypeDef txHeader) {
   }
   txBuffer[2] = encoder2Value >> 8;
   txBuffer[3] = encoder2Value & 0xFF;
+  encoder2Value = 0;
 
   if (HAL_FDCAN_AddMessageToTxFifoQ(&hfdcan1, &txHeader, txBuffer) != HAL_OK) {
     /* Transmission request Error */
