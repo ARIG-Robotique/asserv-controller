@@ -65,8 +65,8 @@ void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, SLEEP_3_Pin|DIR4_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : PCPin PCPin PCPin PCPin
-                           PCPin */
+  /*Configure GPIO pins : DIR3_Pin DIR2_Pin DIR1_Pin SLEEP_1_Pin
+                           SLEEP_2_Pin */
   GPIO_InitStruct.Pin = DIR3_Pin|DIR2_Pin|DIR1_Pin|SLEEP_1_Pin
                           |SLEEP_2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -74,27 +74,27 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PAPin PAPin */
+  /*Configure GPIO pins : SLEEP_4_Pin HEART_BEAT_Pin */
   GPIO_InitStruct.Pin = SLEEP_4_Pin|HEART_BEAT_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PBPin PBPin */
+  /*Configure GPIO pins : SLEEP_3_Pin DIR4_Pin */
   GPIO_InitStruct.Pin = SLEEP_3_Pin|DIR4_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PBPin PBPin PBPin PBPin */
+  /*Configure GPIO pins : FAULT_4_Pin FAULT_3_Pin FAULT_2_Pin FAULT_1_Pin */
   GPIO_InitStruct.Pin = FAULT_4_Pin|FAULT_3_Pin|FAULT_2_Pin|FAULT_1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PCPin PCPin */
+  /*Configure GPIO pins : I2C_ADD2_Pin I2C_ADD1_Pin */
   GPIO_InitStruct.Pin = I2C_ADD2_Pin|I2C_ADD1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
